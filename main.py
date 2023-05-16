@@ -7,7 +7,7 @@ from pydub import playback
 import speech_recognition as sr
 from EdgeGPT import Chatbot, ConversationStyle
 # Initialize the OpenAI API
-openai.api_key = "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"
+openai.api_key = "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"
 
 
 # Create a recognizer object and wake word variables
@@ -86,23 +86,23 @@ async def main():
                 continue
 
             if wake_word == BING_WAKE_WORD:
-                bot = Chatbot(cookiePath='cookies.json')
+                bot = Chatbot(cookie_path='cookies.json')
                 response = await bot.ask(prompt=user_input, conversation_style=ConversationStyle.precise)
 
                 for message in response["item"]["messages"]:
                     if message["author"] == "bot":
                         bot_response = message["text"]
 
-                bot_response = re.sub('\[\^\d+\^\]', '', bot_response)
+                bot_response = re.sub(r'\[\^\d+\^\]', '', bot_response)
 
-                bot = Chatbot(cookiePath='cookies.json')
+                bot = Chatbot(cookie_path='cookies.json')
                 response = await bot.ask(prompt=user_input, conversation_style=ConversationStyle.creative)
                 # Select only the bot response from the response dictionary
                 for message in response["item"]["messages"]:
                     if message["author"] == "bot":
                         bot_response = message["text"]
                 # Remove [^#^] citations in response
-                bot_response = re.sub('\[\^\d+\^\]', '', bot_response)
+                bot_response = re.sub(r'\[\^\d+\^\]', '', bot_response)
 
             else:
                 # Send prompt to GPT-3.5-turbo API
