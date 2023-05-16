@@ -20,11 +20,11 @@ def get_wake_word(phrase):
 
 
 def synthesize_speech(text, output_filename):
-    polly = boto3.client('polly', region_name='us-west-2')
+    polly = boto3.client('polly', region_name="sa-east-1")
     response = polly.synthesize_speech(
         Text=text,
         OutputFormat='mp3',
-        VoiceId='Salli',
+        VoiceId='Camila',
         Engine='neural'
     )
 
