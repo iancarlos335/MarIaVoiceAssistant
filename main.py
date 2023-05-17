@@ -10,7 +10,6 @@ from EdgeGPT import Chatbot, ConversationStyle
 recognizer = sr.Recognizer()
 MARIA_WAKE_WORD = "maria"
 
-
 def get_wake_word(phrase):
     if MARIA_WAKE_WORD in phrase.lower():
         return MARIA_WAKE_WORD
@@ -23,7 +22,9 @@ import pyttsx3
 
 def synthesize_speech(text, output_filename):
     engine = pyttsx3.init()
-    engine.setProperty('voice', 'com.apple.speech.synthesis.voice.Samantha')
+    voices = engine.getProperty('voices')
+    #engine.setProperty('voice', voices[1].id)
+    engine.setProperty('voice','com.apple.speech.synthesis.voice.luciana')
     engine.save_to_file(text, output_filename)
     engine.runAndWait()
 
@@ -38,7 +39,7 @@ async def main():
 
         with sr.Microphone() as source:
             recognizer.adjust_for_ambient_noise(source)
-            print(f"Diga MARIA quando precisar me chamar")
+            print(f"Diga MARIA quando precisar me chamar. ;)")
             while True:
                 audio = recognizer.listen(source)
                 try:
@@ -63,7 +64,7 @@ async def main():
                     continue
 
             print("Speak a prompt...")
-            synthesize_speech('What can I help you with?', 'response.mp3')
+            synthesize_speech('Como posso te ajudar?', 'response.mp3')
             play_audio('response.mp3')
             audio = recognizer.listen(source)
 
