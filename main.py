@@ -1,4 +1,3 @@
-import openai
 import asyncio
 import re
 import whisper
@@ -6,21 +5,15 @@ import pydub
 from pydub import playback
 import speech_recognition as sr
 from EdgeGPT import Chatbot, ConversationStyle
-# Initialize the OpenAI API
-openai.api_key = "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"
-
 
 # Create a recognizer object and wake word variables
 recognizer = sr.Recognizer()
-BING_WAKE_WORD = "bing"
-GPT_WAKE_WORD = "gpt"
+MARIA_WAKE_WORD = "maria"
 
 
 def get_wake_word(phrase):
-    if BING_WAKE_WORD in phrase.lower():
-        return BING_WAKE_WORD
-    elif GPT_WAKE_WORD in phrase.lower():
-        return GPT_WAKE_WORD
+    if MARIA_WAKE_WORD in phrase.lower():
+        return MARIA_WAKE_WORD
     else:
         return None
     
@@ -45,7 +38,7 @@ async def main():
 
         with sr.Microphone() as source:
             recognizer.adjust_for_ambient_noise(source)
-            print(f"Waiting for wake words 'ok bing' or 'ok chat'...")
+            print(f"Diga MARIA quando precisar me chamar")
             while True:
                 audio = recognizer.listen(source)
                 try:
@@ -85,44 +78,23 @@ async def main():
                 print("Error transcribing audio: {0}".format(e))
                 continue
 
-            if wake_word == BING_WAKE_WORD:
-                bot = Chatbot(cookie_path='cookies.json')
-                response = await bot.ask(prompt=user_input, conversation_style=ConversationStyle.precise)
+            bot = Chatbot(cookie_path='cookies.json')
+            response = await bot.ask(prompt=user_input, conversation_style=ConversationStyle.precise)
 
-                for message in response["item"]["messages"]:
-                    if message["author"] == "bot":
-                        bot_response = message["text"]
+            for message in response["item"]["messages"]:
+                if message["author"] == "bot":
+                    bot_response = message["text"]
 
-                bot_response = re.sub(r'\[\^\d+\^\]', '', bot_response)
+            bot_response = re.sub(r'\[\^\d+\^\]', '', bot_response)
 
-                bot = Chatbot(cookie_path='cookies.json')
-                response = await bot.ask(prompt=user_input, conversation_style=ConversationStyle.creative)
-                # Select only the bot response from the response dictionary
-                for message in response["item"]["messages"]:
-                    if message["author"] == "bot":
-                        bot_response = message["text"]
-                # Remove [^#^] citations in response
-                bot_response = re.sub(r'\[\^\d+\^\]', '', bot_response)
-
-            else:
-                # Send prompt to GPT-3.5-turbo API
-                response = openai.ChatCompletion.create(
-                    model="gpt-3.5-turbo",
-                    messages=[
-                        {"role": "system", "content":
-                        "You are a helpful assistant."},
-                        {"role": "user", "content": user_input},
-                    ],
-                    temperature=0.5,
-                    max_tokens=150,
-                    top_p=1,
-                    frequency_penalty=0,
-                    presence_penalty=0,
-                    n=1,
-                    stop=["\nUser:"],
-                )
-
-                bot_response = response["choices"][0]["message"]["content"]
+            bot = Chatbot(cookie_path='cookies.json')
+            response = await bot.ask(prompt=user_input, conversation_style=ConversationStyle.creative)
+            # Select only the bot response from the response dictionary
+            for message in response["item"]["messages"]:
+                if message["author"] == "bot":
+                    bot_response = message["text"]
+            # Remove [^#^] citations in response
+            bot_response = re.sub(r'\[\^\d+\^\]', '', bot_response)
                 
         print("Bot's response:", bot_response)
         synthesize_speech(bot_response, 'response.mp3')
