@@ -8,12 +8,12 @@ from EdgeGPT import Chatbot, ConversationStyle
 from pydub import playback
 
 recognizer = sr.Recognizer()
-BING_WAKE_WORD = "maria"
+MARIA_WAKE_WORD = "maria"
 
 
 def get_wake_word(phrase):
-    if BING_WAKE_WORD in phrase.lower():
-        return BING_WAKE_WORD
+    if MARIA_WAKE_WORD in phrase.lower():
+        return MARIA_WAKE_WORD
     else:
         return None
 
@@ -34,31 +34,35 @@ def play_audio(file):
 
 async def main():
     while True:
+
         with sr.Microphone() as source:
             recognizer.adjust_for_ambient_noise(source)
-            print(f"Esperando para contruir palavras, diga 'Olá Maria'...")
+            print(f"Diga MARIA quando precisar me chamar. ;)")
             while True:
                 audio = recognizer.listen(source)
                 try:
                     with open("audio.wav", "wb") as f:
                         f.write(audio.get_wav_data())
+                        f.close()
                     # Use the preloaded tiny_model
-                    model = whisper.load_model("tiny")
+                    model = whisper.load_model("base")
+
+                    audio_1 = whisper.load_audio('audio.wav')
                     result = model.transcribe("audio.wav")
                     phrase = result["text"]
-                    print(f"Você disse: {phrase}")
+                    print(f"You said: {phrase}")
 
                     wake_word = get_wake_word(phrase)
                     if wake_word is not None:
                         break
                     else:
-                        print("Não é uma frase. Tente novamente.")
+                        print("Not a wake word. Try again.")
                 except Exception as e:
-                    print("Erro transcrevendo o audio: {0}".format(e))
+                    print("Error transcribing audio: {0}".format(e))
                     continue
 
-            print("Diga algo...")
-            synthesize_speech('Como eu posso ajudar?', 'response.mp3')
+            print("Speak a prompt...")
+            synthesize_speech('Como posso te ajudar?', 'response.mp3')
             play_audio('response.mp3')
             audio = recognizer.listen(source)
 
@@ -68,22 +72,30 @@ async def main():
                 model = whisper.load_model("base")
                 result = model.transcribe("audio_prompt.wav")
                 user_input = result["text"]
-                print(f"Você disse: {user_input}")
+                print(f"You said: {user_input}")
             except Exception as e:
-                print("Erro transcrevendo o audio: {0}".format(e))
+                print("Error transcribing audio: {0}".format(e))
                 continue
 
             bot = Chatbot(cookie_path='cookies.json')
-            response = await bot.ask(prompt=user_input,
-                                     conversation_style=ConversationStyle.precise)
-            # Select only bot response from the response dictionary
+            response = await bot.ask(prompt=user_input, conversation_style=ConversationStyle.precise)
+
             for message in response["item"]["messages"]:
                 if message["author"] == "bot":
                     bot_response = message["text"]
-            # Remove citations on response
-            bot_response = re.sub('\[\^\d+\^\]', '', bot_response)
 
-        print("Bot's response", bot_response)
+            bot_response = re.sub(r'\[\^\d+\^\]', '', bot_response)
+
+            bot = Chatbot(cookie_path='cookies.json')
+            response = await bot.ask(prompt=user_input, conversation_style=ConversationStyle.creative)
+            # Select only the bot response from the response dictionary
+            for message in response["item"]["messages"]:
+                if message["author"] == "bot":
+                    bot_response = message["text"]
+            # Remove [^#^] citations in response
+            bot_response = re.sub(r'\[\^\d+\^\]', '', bot_response)
+
+        print("Bot's response:", bot_response)
         synthesize_speech(bot_response, 'response.mp3')
         play_audio('response.mp3')
         await bot.close()
