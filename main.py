@@ -1,12 +1,11 @@
 import asyncio
 import re
-import whisper
-import boto3
 import pydub
-import openai
-from pydub import playback
+import pyttsx3
 import speech_recognition as sr
+import whisper
 from EdgeGPT import Chatbot, ConversationStyle
+from pydub import playback
 
 recognizer = sr.Recognizer()
 BING_WAKE_WORD = "maria"
@@ -20,20 +19,16 @@ def get_wake_word(phrase):
 
 
 def synthesize_speech(text, output_filename):
-    polly = boto3.client('polly', region_name="sa-east-1")
-    response = polly.synthesize_speech(
-        Text=text,
-        OutputFormat='mp3',
-        VoiceId='Camila',
-        Engine='neural'
-    )
-
-    with open(output_filename, 'wb') as f:
-        f.write(response['AudioStream'].read())
+    engine = pyttsx3.init()
+    voices = engine.getProperty('voices')
+    # engine.setProperty('voice', voices[1].id)
+    engine.setProperty('voice', 'com.apple.speech.synthesis.voice.luciana')
+    engine.save_to_file(text, output_filename)
+    engine.runAndWait()
 
 
 def play_audio(file):
-    sound = pydub.AudioSegment.from_file(file, format="mp3")
+    sound = pydub.AudioSegment.from_file(file, format="wav")
     playback.play(sound)
 
 
