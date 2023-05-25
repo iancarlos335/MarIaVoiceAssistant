@@ -1,7 +1,7 @@
-from django.conf.urls import url
+from django.urls import re_path
 from AudioResponse import views
 
 urlpatterns=[
-    url(r'^audioResponse/$', views.iaAudioResponseApi),
-    url(r'^audioResponse/([0-9]+)$', views.iaAudioResponseApi)
+    re_path(r'^audioResponse/$', views.iaAudioResponseApi),
+    re_path(r'^audioResponse/([0-9]+)$', views.iaAudioResponseApi)
 ]

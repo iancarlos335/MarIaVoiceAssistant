@@ -1,4 +1,4 @@
-from rest_framework.serializers import serializers
+from rest_framework.serializers import serializer
 from AudioResponse.models import IaAudioResponse
 
 

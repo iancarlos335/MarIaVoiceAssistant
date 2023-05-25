@@ -9,7 +9,7 @@ from AudioResponse.serializers import IaAudioResponseSerializer
 
 # Create your views here.
 @csrf_exempt
-def IaAudioResponseApi(request, id=0):
+def iaAudioResponseApi(request, id=0):
     if request.method == 'GET':
         iaAudioResponse = IaAudioResponse.objects.all()
         iaAudioResponse_serializer = IaAudioResponseSerializer(iaAudioResponse, many=True)
