@@ -1,5 +1,7 @@
 import asyncio
 import re
+import sys
+
 import whisper
 import pydub
 from pydub import playback
@@ -10,12 +12,13 @@ from EdgeGPT import Chatbot, ConversationStyle
 recognizer = sr.Recognizer()
 MARIA_WAKE_WORD = "maria"
 
+
 def get_wake_word(phrase):
     if MARIA_WAKE_WORD in phrase.lower():
         return MARIA_WAKE_WORD
     else:
         return None
-    
+
 
 import pyttsx3
 
@@ -23,8 +26,8 @@ import pyttsx3
 def synthesize_speech(text, output_filename):
     engine = pyttsx3.init()
     voices = engine.getProperty('voices')
-    #engine.setProperty('voice', voices[1].id)
-    engine.setProperty('voice','com.apple.speech.synthesis.voice.luciana')
+    # engine.setProperty('voice', voices[1].id)
+    engine.setProperty('voice', 'com.apple.speech.synthesis.voice.luciana')
     engine.save_to_file(text, output_filename)
     engine.runAndWait()
 
@@ -37,6 +40,7 @@ def play_audio(file):
 async def main():
     while True:
 
+        print("Python " + sys.version)
         with sr.Microphone() as source:
             recognizer.adjust_for_ambient_noise(source)
             print(f"Diga MARIA quando precisar me chamar. ;)")
@@ -48,7 +52,7 @@ async def main():
                         f.close()
                     # Use the preloaded tiny_model
                     model = whisper.load_model("base")
-                    
+
                     audio_1 = whisper.load_audio('audio.wav')
                     result = model.transcribe("audio.wav")
                     phrase = result["text"]
@@ -96,7 +100,7 @@ async def main():
                     bot_response = message["text"]
             # Remove [^#^] citations in response
             bot_response = re.sub(r'\[\^\d+\^\]', '', bot_response)
-                
+
         print("Bot's response:", bot_response)
         synthesize_speech(bot_response, 'response.mp3')
         play_audio('response.mp3')
