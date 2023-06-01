@@ -1,7 +1,7 @@
 import asyncio
 import re
 import sys
-
+import pyttsx3
 import whisper
 import pydub
 from pydub import playback
@@ -18,9 +18,6 @@ def get_wake_word(phrase):
         return MARIA_WAKE_WORD
     else:
         return None
-
-
-import pyttsx3
 
 
 def synthesize_speech(text, output_filename):
@@ -40,7 +37,6 @@ def play_audio(file):
 async def main():
     while True:
 
-        print("Python " + sys.version)
         with sr.Microphone() as source:
             recognizer.adjust_for_ambient_noise(source)
             print(f"Diga MARIA quando precisar me chamar. ;)")
@@ -83,14 +79,14 @@ async def main():
                 print("Error transcribing audio: {0}".format(e))
                 continue
 
-            bot = Chatbot(cookie_path='cookies.json')
-            response = await bot.ask(prompt=user_input, conversation_style=ConversationStyle.precise)
-
-            for message in response["item"]["messages"]:
-                if message["author"] == "bot":
-                    bot_response = message["text"]
-
-            bot_response = re.sub(r'\[\^\d+\^\]', '', bot_response)
+            # bot = Chatbot(cookie_path='cookies.json')
+            # response = await bot.ask(prompt=user_input, conversation_style=ConversationStyle.precise)
+            #
+            # for message in response["item"]["messages"]:
+            #     if message["author"] == "bot":
+            #         bot_response = message["text"]
+            #
+            # bot_response = re.sub(r'\[\^\d+\^\]', '', bot_response)
 
             bot = Chatbot(cookie_path='cookies.json')
             response = await bot.ask(prompt=user_input, conversation_style=ConversationStyle.creative)
@@ -105,6 +101,7 @@ async def main():
         synthesize_speech(bot_response, 'response.mp3')
         play_audio('response.mp3')
         await bot.close()
+
 
 if __name__ == "__main__":
     asyncio.run(main())
