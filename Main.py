@@ -39,7 +39,7 @@ async def main():
 
         with sr.Microphone() as source:
             recognizer.adjust_for_ambient_noise(source)
-            print(f"Diga MARIA quando precisar me chamar. ;)")
+            print(f"\n\nDiga MARIA quando precisar me chamar. ;)")
             while True:
                 audio = recognizer.listen(source)
                 try:
@@ -52,7 +52,7 @@ async def main():
                     audio_1 = whisper.load_audio('audio.wav')
                     result = model.transcribe("audio.wav")
                     phrase = result["text"]
-                    print(f"Você disse: {phrase}")
+                    print(f"\n\n\nVocê disse: {phrase}")
 
                     wake_word = get_wake_word(phrase)
                     if wake_word is not None:
@@ -74,7 +74,7 @@ async def main():
                 model = whisper.load_model("base")
                 result = model.transcribe("audio_prompt.wav")
                 user_input = result["text"]
-                print(f"Você disse: {user_input}")
+                print(f"\n\n\nVocê disse: {user_input}")
             except Exception as e:
                 print("Error transcribing audio: {0}".format(e))
                 continue
@@ -97,7 +97,7 @@ async def main():
             # Remove [^#^] citations in response
             bot_response = re.sub(r'\[\^\d+\^\]', '', bot_response)
 
-        print("Resposta da MarIA:", bot_response)
+        print("\nResposta da MarIA:", bot_response)
         synthesize_speech(bot_response, 'response.mp3')
         play_audio('response.mp3')
         await bot.close()
