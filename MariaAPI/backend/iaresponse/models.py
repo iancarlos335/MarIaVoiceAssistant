@@ -15,6 +15,6 @@ class Folder(models.Model):
 
 class IaResponse(models.Model):
     question = models.CharField(max_length=255)
-    audio_response = models.FileField(upload_to=get_upload_path)
+    audio_responses = models.FileField(upload_to=get_upload_path)
     folder = models.ForeignKey(Folder, on_delete=models.CASCADE)
     date_register = models.DateTimeField(default=datetime.now())
