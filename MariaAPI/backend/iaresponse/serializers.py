@@ -1,5 +1,6 @@
+import shutil
+
 from rest_framework import serializers
-from . import models
 
 from .models import *
 
@@ -16,6 +17,9 @@ class AudioListSerializer(serializers.Serializer):
     )
     folder = serializers.CharField(required=False)
 
+    def zip_files(self, folder):
+        shutil.make_archive(f'public/static/zip/{folder}', 'zip', f'public/static/{folder}')
+
     def create(self, validated_data):
         folder = Folder.objects.create()
         audio_responses = validated_data.pop('audio_responses')
@@ -24,4 +28,5 @@ class AudioListSerializer(serializers.Serializer):
             response_obj = IaResponse.objects.create(folder=folder, audio_response=audio_response)
             response_objs.append(response_obj)
 
+        self.zip_files(folder.uid)
         return {'audio_responses': {}, 'folder': str(folder.uid)}

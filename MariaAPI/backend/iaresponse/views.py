@@ -1,11 +1,6 @@
-from django.shortcuts import render
-from django.http import FileResponse
-from rest_framework.decorators import api_view
-from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from . import models, serializers
 from .serializers import *
 
 
@@ -18,7 +13,10 @@ class IaVoiceResponse(APIView):
 
             if serializer.is_valid():
                 serializer.save()
-                return Response({'status': '200', 'message': 'Arquivos de audio enviados com sucesso'})
+                return Response(
+                    {'status': '200',
+                     'message': 'Arquivos de audio enviados com sucesso',
+                     'data': serializer.data})
 
             return Response({
                 'status': 400,
