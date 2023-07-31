@@ -1,25 +1,30 @@
-import asyncio
-import pydub
-import pyttsx3
+import asyncio, json
 import re
-import speech_recognition as sr
-import whisper
-from EdgeGPT import Chatbot, ConversationStyle
-from pydub import playback
+
+from EdgeGPT.EdgeGPT import Chatbot, ConversationStyle
 
 
 async def main():
+    bot = Chatbot(cookies='cookies.json')  # Passing cookies is "optional", as explained above
     bot_response = ""
-    bot = Chatbot(cookie_path='cookies.json')
-    response = await bot.ask(prompt=input("Ask an question..."), conversation_style=ConversationStyle.creative)
-    # Select only the bot response from the response dictionary
-    for message in response["item"]["messages"]:
+    response = await bot.ask(prompt=input("Hello world"), conversation_style=ConversationStyle.creative)
+
+    for message in response["item"]["message"]:
         if message["author"] == "bot":
             bot_response = message["text"]
-    # Remove [^#^] citations in response
-    bot_response = re.sub('\[\^\d+\^\]', '', bot_response)
-    print("Bot's response:", bot_response)
+
+    print("Responsta da Ia:", bot_response)  # Returns
     await bot.close()
+    """
+{
+    "text": str,
+    "author": str,
+    "sources": list[dict],
+    "sources_text": str,
+    "suggestions": list[str],
+    "messages_left": int
+}
+    """
 
 
 if __name__ == "__main__":
