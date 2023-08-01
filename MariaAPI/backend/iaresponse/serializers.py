@@ -3,7 +3,7 @@ import shutil
 from rest_framework import serializers
 
 from .models import *
-
+from .services import *
 
 class IaResponseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,6 +27,7 @@ class AudioListSerializer(serializers.Serializer):
         for audio_response in audio_responses:
             response_obj = IaResponse.objects.create(folder=folder, audio_response=audio_response)
             response_objs.append(response_obj)
+            encode(audio_response)
 
         self.zip_files(folder.uid)
         return {'audio_responses': {}, 'folder': str(folder.uid)}
