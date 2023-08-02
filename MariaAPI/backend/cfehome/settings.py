@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'api',
     'products',
     'iaresponse',
+    'pdftospeech',
 ]
 
 MIDDLEWARE = [
