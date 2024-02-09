@@ -14,5 +14,5 @@ def encode(filepath):
             text = page.extract_text()
             file_text += text
 
-    speaker.save_to_file(file_text, f'public/static/audios/audio_transcribed.mp3')
+    speaker.save_to_file(file_text, f'public/static/audio/audio_transcribed.mp3')
     speaker.runAndWait()
