@@ -3,4 +3,7 @@ response.mp3
 audio_prompt.wav
 /.idea
 /venv
-/MariaAPI/backend/public
+MariaIA/backend/public
+build
+dist
+Main.spec

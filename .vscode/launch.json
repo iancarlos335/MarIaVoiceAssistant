@@ -8,7 +8,7 @@
             "name": "Python: Django",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}\\MariaAPI\\backend\\manage.py",
+            "program": "${workspaceFolder}\\MariaIA\\backend\\manage.py",
             "args": [
                 "runserver",
                 "192.168.137.1:8000"
