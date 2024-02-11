@@ -1,0 +1,11 @@
+django
+djangorestframework
+pyyaml
+requests
+django-cors-headers
+pydub
+pyttsx3
+EdgeGPT
+SpeechRecognition
+openai-whisper
+pyaudio

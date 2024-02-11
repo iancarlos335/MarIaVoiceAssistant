@@ -5,7 +5,7 @@ import pydub
 import pyttsx3
 import speech_recognition as sr
 import whisper
-from EdgeGPT import Chatbot, ConversationStyle
+from EdgeGPT.EdgeGPT import Chatbot, ConversationStyle
 from pydub import playback
 
 # Create a recognizer object and wake word variables
