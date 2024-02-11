@@ -9,3 +9,4 @@ EdgeGPT
 SpeechRecognition
 openai-whisper
 pyaudio
+pyinstaller

@@ -1,2 +1,5 @@
 venv
 cookies.json
+build
+dist
+Main.spec
